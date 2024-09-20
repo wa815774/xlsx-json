@@ -81,7 +81,10 @@ export var getTranslateMap = function (config) {
         var jsonData, json;
         return __generator(this, function (_a) {
             try {
-                jsonData = fs.readFileSync(item.outPath, 'utf8');
+                jsonData = '{}';
+                if (fs.existsSync(item.outPath)) {
+                    jsonData = fs.readFileSync(item.outPath, 'utf8');
+                }
                 json = JSON.parse(jsonData !== null && jsonData !== void 0 ? jsonData : '{}');
                 Object.entries(json).forEach(function (_a) {
                     var _b;

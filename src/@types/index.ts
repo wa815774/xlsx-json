@@ -7,6 +7,8 @@ export interface XlsxAutoJsonConfigProps {
     contrastLangIndex: number
     /** 翻译文案未找到时默认文案 */
     defaultValueIndex: number
+    /** 过滤掉从第一排到第xx排数据，默认为0，表示过滤第一排数据 */
+    excludeRows: number,
 
     translate: {
         /** 翻译语言 */

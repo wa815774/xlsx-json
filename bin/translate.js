@@ -1,2 +1,4 @@
 #!/usr/bin/env node
-import '../dist/index.js'
+import xlsxToJSON from '../dist/index.js'
+
+xlsxToJSON(process.argv[2])

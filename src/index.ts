@@ -1,15 +1,14 @@
-import fs from 'fs'
 import { loadConfig } from "unconfig"
 import { XlsxAutoJsonConfigProps } from "./@types/index.js";
 import { TranslateItem, getTranslateMap, getXlsx, writeFile } from "./utils/index.js";
-import { escapeSpecialChars, filterArray } from './utils/tools.js';
+import { filterArray } from './utils/tools.js';
 
-(async () => {
+const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
     const { config } = await loadConfig<XlsxAutoJsonConfigProps>({
         sources: [
             {
-                files: 'translate.config',
-                extensions: ['ts', 'js']
+                files: files,
+                // extensions: ['ts', 'js']
             }
         ]
     })
@@ -25,7 +24,9 @@ import { escapeSpecialChars, filterArray } from './utils/tools.js';
     })
 
     xlsx.forEach((item, index) => {
-        translateItem.createLangMap(item, translateMap)
+        if (+(config.excludeRows || 0) < index) {
+            translateItem.createLangMap(item, translateMap)
+        }
     })
 
     // 打印并写出
@@ -41,4 +42,6 @@ import { escapeSpecialChars, filterArray } from './utils/tools.js';
 
         writeFile(translate.outPath, `{\n${text}\n}`, translate.targetLang)
     })
-})()
+})
+
+export default xlsxToJSON
