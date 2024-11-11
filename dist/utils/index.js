@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { toCamelCaseFromSpace, removeExtraLineBreaks, removeSpecialChars, processString } from "./tools.js";
+import { toCamelCaseFromSpace, removeExtraLineBreaks, removeSpecialChars, processString, splitWithLineThrough } from "./tools.js";
 import XLSX from 'xlsx';
 import fs from 'fs';
 /**
@@ -124,6 +124,8 @@ var TranslateItem = /** @class */ (function () {
         this._initKey = props === null || props === void 0 ? void 0 : props.initKey;
         this._contrastLangIndex = props.contrastLangIndex;
         this._defaultValueIndex = props.defaultValueIndex;
+        this._customizeKeyIndex = props.customizeKeyIndex || -1;
+        this._createKeyRule = props.createKeyRule || 'camelCase';
     }
     /**
      * 分隔字符串
@@ -145,11 +147,11 @@ var TranslateItem = /** @class */ (function () {
         config.forEach(function (lang) {
             var value = valueList[lang.targetIndex];
             keyList === null || keyList === void 0 ? void 0 : keyList.forEach(function (key, index) {
-                var _a, _b, _c;
-                var mapKey = removeSpecialChars(removeExtraLineBreaks(toCamelCaseFromSpace((_a = "".concat(_this._initKey).concat(key)) === null || _a === void 0 ? void 0 : _a.trim())));
-                lang.map.set(
-                // toCamelCaseFromSpace(removeSpecialChars(removeExtraLineBreaks(`${this._initKey}${key}`?.trim()))),
-                mapKey, (_c = processString((_b = value === null || value === void 0 ? void 0 : value[index]) !== null && _b !== void 0 ? _b : defaultList === null || defaultList === void 0 ? void 0 : defaultList[index])) === null || _c === void 0 ? void 0 : _c.trim());
+                var _a, _b, _c, _d, _e, _f;
+                var mapKey = ((_a = valueList[_this._customizeKeyIndex]) === null || _a === void 0 ? void 0 : _a[0]) ||
+                    ((_b = _this._initKey) !== null && _b !== void 0 ? _b : '') + (_this._createKeyRule === 'splitWithLineThrough' ?
+                        (removeSpecialChars(removeExtraLineBreaks(splitWithLineThrough((_c = "".concat(key)) === null || _c === void 0 ? void 0 : _c.trim())), true)) : removeSpecialChars(removeExtraLineBreaks(toCamelCaseFromSpace((_d = "".concat(key)) === null || _d === void 0 ? void 0 : _d.trim()))));
+                lang.map.set(mapKey, (_f = processString((_e = value === null || value === void 0 ? void 0 : value[index]) !== null && _e !== void 0 ? _e : defaultList === null || defaultList === void 0 ? void 0 : defaultList[index])) === null || _f === void 0 ? void 0 : _f.trim());
             });
         });
     };

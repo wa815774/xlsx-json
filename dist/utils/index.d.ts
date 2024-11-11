@@ -4,7 +4,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 /// <reference types="node" />
-import { XlsxAutoJsonConfigProps } from "../@types/index.js";
+import { XlsxAutoJsonConfigProps } from "../types/index.js";
 import fs from 'fs';
 /**
  * 获取xlsx数据
@@ -33,8 +33,10 @@ export declare const writeFile: (url: fs.PathOrFileDescriptor, text: string | No
 export declare class TranslateItem {
     private _contrastLangIndex;
     private _defaultValueIndex;
+    private _customizeKeyIndex;
     private _initKey?;
-    constructor(props: Pick<XlsxAutoJsonConfigProps, 'contrastLangIndex' | 'defaultValueIndex' | 'initKey'>);
+    private _createKeyRule?;
+    constructor(props: Pick<XlsxAutoJsonConfigProps, 'contrastLangIndex' | 'defaultValueIndex' | 'customizeKeyIndex' | 'initKey' | 'createKeyRule'>);
     /**
      * 分隔字符串
      * @param text

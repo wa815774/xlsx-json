@@ -17,8 +17,9 @@ export var escapeSpecialChars = function (inputString) {
  * @param str
  * @returns
  */
-export var removeSpecialChars = function (str) {
-    var specialCharacters = /[-\/\\^$*+?,():|[\]{}"]/g;
+export var removeSpecialChars = function (str, retainLineThrough) {
+    if (retainLineThrough === void 0) { retainLineThrough = false; }
+    var specialCharacters = retainLineThrough ? /[\/\\^$*+?,():|[\]{}"]/g : /[-\/\\^$*+?,():|[\]{}"]/g;
     var result = str === null || str === void 0 ? void 0 : str.replace(specialCharacters, "");
     return result;
 };
@@ -39,6 +40,18 @@ export function toCamelCaseFromSpace(str) {
     if (!str)
         return '';
     str = str.replace(/\s+(.)/g, function (_, c) { return c.toUpperCase(); });
+    // return str[0].toUpperCase() + str.slice(1)
+    return str;
+}
+/**
+ * 转换为每个单词都以“-”来分割
+ * @param str
+ * @returns
+ */
+export function splitWithLineThrough(str) {
+    if (!str)
+        return '';
+    str = str.replace(/\s+/g, '-');
     // return str[0].toUpperCase() + str.slice(1)
     return str;
 }

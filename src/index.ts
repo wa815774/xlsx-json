@@ -1,5 +1,5 @@
 import { loadConfig } from "unconfig"
-import { XlsxAutoJsonConfigProps } from "./@types/index.js";
+import { XlsxAutoJsonConfigProps } from "./types/index.js";
 import { TranslateItem, getTranslateMap, getXlsx, writeFile } from "./utils/index.js";
 import { filterArray } from './utils/tools.js';
 
@@ -17,11 +17,7 @@ const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
     const xlsx = filterArray(getXlsx(config.fromXlsxPath, config.sheetNames))
     const translateMap = getTranslateMap(config)
 
-    const translateItem = new TranslateItem({
-        initKey: config.initKey,
-        contrastLangIndex: config.contrastLangIndex,
-        defaultValueIndex: config.defaultValueIndex,
-    })
+    const translateItem = new TranslateItem(config)
 
     xlsx.forEach((item, index) => {
         if (+(config.excludeRows || 0) < index) {
@@ -37,6 +33,10 @@ const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
             if (typeof value === 'undefined') {
                 console.log(`${translate.targetLang}: ${key} ==== undefined`);
             }
+            if (value.indexOf('\n') > -1) {
+                // 若文案中有换行符，需要保留
+                value = value.replaceAll('\n', '\\n')
+            }
             return `  "${key}": "${typeof value === 'undefined' ? config.noFoundTest : value}"${index === (list?.length - 1) ? '' : ','}`
         }).join('\n')
 
@@ -45,3 +45,4 @@ const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
 })
 
 export default xlsxToJSON
+export type { XlsxAutoJsonConfigProps }

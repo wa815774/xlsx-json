@@ -57,11 +57,7 @@ var xlsxToJSON = (function (files) {
                     config = (_a.sent()).config;
                     xlsx = filterArray(getXlsx(config.fromXlsxPath, config.sheetNames));
                     translateMap = getTranslateMap(config);
-                    translateItem = new TranslateItem({
-                        initKey: config.initKey,
-                        contrastLangIndex: config.contrastLangIndex,
-                        defaultValueIndex: config.defaultValueIndex,
-                    });
+                    translateItem = new TranslateItem(config);
                     xlsx.forEach(function (item, index) {
                         if (+(config.excludeRows || 0) < index) {
                             translateItem.createLangMap(item, translateMap);
@@ -74,6 +70,10 @@ var xlsxToJSON = (function (files) {
                             var key = _a[0], value = _a[1];
                             if (typeof value === 'undefined') {
                                 console.log("".concat(translate.targetLang, ": ").concat(key, " ==== undefined"));
+                            }
+                            if (value.indexOf('\n') > -1) {
+                                // 若文案中有换行符，需要保留
+                                value = value.replaceAll('\n', '\\n');
                             }
                             return "  \"".concat(key, "\": \"").concat(typeof value === 'undefined' ? config.noFoundTest : value, "\"").concat(index === ((list === null || list === void 0 ? void 0 : list.length) - 1) ? '' : ',');
                         }).join('\n');

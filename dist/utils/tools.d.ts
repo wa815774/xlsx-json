@@ -1,4 +1,4 @@
-import { XlsxAutoJsonConfigProps } from "../@types";
+import { XlsxAutoJsonConfigProps } from "../types";
 /**
  * 配置文件
  * @param config
@@ -16,7 +16,7 @@ export declare const escapeSpecialChars: (inputString: string) => string;
  * @param str
  * @returns
  */
-export declare const removeSpecialChars: (str: string) => string;
+export declare const removeSpecialChars: (str: string, retainLineThrough?: boolean) => string;
 /**
  * 去除空数组
  * @param array
@@ -29,6 +29,12 @@ export declare const filterArray: (array: any[]) => any[];
  * @returns
  */
 export declare function toCamelCaseFromSpace(str: string): string;
+/**
+ * 转换为每个单词都以“-”来分割
+ * @param str
+ * @returns
+ */
+export declare function splitWithLineThrough(str: string): string;
 /**
  * 去除多余的回车
  * @param input

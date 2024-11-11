@@ -1,4 +1,4 @@
-import { XlsxAutoJsonConfigProps } from "../@types";
+import { XlsxAutoJsonConfigProps } from "../types";
 
 /**
  * 配置文件
@@ -21,8 +21,8 @@ export const escapeSpecialChars = (inputString: string): string => {
  * @param str 
  * @returns 
  */
-export const removeSpecialChars = (str: string): string => {
-    const specialCharacters = /[-\/\\^$*+?,():|[\]{}"]/g;
+export const removeSpecialChars = (str: string, retainLineThrough = false): string => {
+    const specialCharacters = retainLineThrough ? /[\/\\^$*+?,():|[\]{}"]/g : /[-\/\\^$*+?,():|[\]{}"]/g;
     const result = str?.replace(specialCharacters, "");
     return result;
 }
@@ -50,6 +50,18 @@ export function toCamelCaseFromSpace(str: string) {
 }
 
 /**
+ * 转换为每个单词都以“-”来分割
+ * @param str 
+ * @returns 
+ */
+export function splitWithLineThrough(str: string) {
+    if (!str) return ''
+    str = str.replace(/\s+/g, '-');
+    // return str[0].toUpperCase() + str.slice(1)
+    return str
+}
+
+/**
  * 去除多余的回车
  * @param input 
  * @returns 
@@ -67,10 +79,10 @@ export function removeExtraLineBreaks(input: string): string {
 export const processString = (inputString: string): string => {
     // 添加转义字符
     const stringWithEscapedChars = inputString
-    // 转义 “
-    ?.replace(/(["])/g, '\\$1')
-    // 去掉 /' 替换成 ‘(这个本来是能正常显示的，但是编辑器在json文件中要报错)
-    ?.replace(/\\'/g, "'");
+        // 转义 “
+        ?.replace(/(["])/g, '\\$1')
+        // 去掉 /' 替换成 ‘(这个本来是能正常显示的，但是编辑器在json文件中要报错)
+        ?.replace(/\\'/g, "'");
 
     // 去除多余的回车
     const stringWithoutExtraLineBreaks = stringWithEscapedChars?.replace(/(\r\n|\n|\r)+/g, '\n');

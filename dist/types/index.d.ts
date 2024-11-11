@@ -1,14 +1,18 @@
 export interface XlsxAutoJsonConfigProps {
-    /** 翻译文案拼接key */
+    /** 翻译key前缀，若有自定义key，则不添加前缀 */
     initKey?: string;
+    /** 自动翻译为key的列索引 */
+    contrastLangIndex: number;
+    /** 自定义key的列索引 */
+    customizeKeyIndex?: number;
+    /** key生成规则，默认驼峰 */
+    createKeyRule: 'camelCase' | 'splitWithLineThrough';
     /** 翻译转换文件地址(xlsx) */
     fromXlsxPath: string;
-    /** 默认对比项语言 */
-    contrastLangIndex: number;
-    /** 翻译文案未找到时默认文案 */
+    /** 翻译文案未找到时文案所在列索引 */
     defaultValueIndex: number;
-    /** 过滤掉从第一排到第xx排数据，默认为0，表示过滤第一排数据 */
-    excludeRows: number;
+    /** 过滤掉从第一行到第xx行数据，默认为0，表示过滤第一行数据 */
+    excludeRows?: number;
     translate: {
         /** 翻译语言 */
         targetLang: string;

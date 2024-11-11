@@ -1,5 +1,5 @@
-import { XlsxAutoJsonConfigProps } from "../@types/index.js"
-import { toCamelCaseFromSpace, escapeSpecialChars, removeExtraLineBreaks, removeSpecialChars, processString } from "./tools.js";
+import { XlsxAutoJsonConfigProps } from "../types/index.js"
+import { toCamelCaseFromSpace, escapeSpecialChars, removeExtraLineBreaks, removeSpecialChars, processString, splitWithLineThrough } from "./tools.js";
 import XLSX from 'xlsx';
 import fs from 'fs';
 
@@ -81,14 +81,18 @@ export const writeFile = (url: fs.PathOrFileDescriptor, text: string | NodeJS.Ar
 }
 
 export class TranslateItem {
-    private _contrastLangIndex: number
-    private _defaultValueIndex: number
-    private _initKey?: string
+    private _contrastLangIndex: XlsxAutoJsonConfigProps['contrastLangIndex']
+    private _defaultValueIndex: XlsxAutoJsonConfigProps['defaultValueIndex']
+    private _customizeKeyIndex: NonNullable<XlsxAutoJsonConfigProps['customizeKeyIndex']>
+    private _initKey?: XlsxAutoJsonConfigProps['initKey']
+    private _createKeyRule?: XlsxAutoJsonConfigProps['createKeyRule']
 
-    constructor(props: Pick<XlsxAutoJsonConfigProps, 'contrastLangIndex' | 'defaultValueIndex' | 'initKey'>) {
+    constructor(props: Pick<XlsxAutoJsonConfigProps, 'contrastLangIndex' | 'defaultValueIndex' | 'customizeKeyIndex' | 'initKey' | 'createKeyRule'>) {
         this._initKey = props?.initKey
         this._contrastLangIndex = props.contrastLangIndex
         this._defaultValueIndex = props.defaultValueIndex
+        this._customizeKeyIndex = props.customizeKeyIndex || -1
+        this._createKeyRule = props.createKeyRule || 'camelCase'
     }
 
     /**
@@ -109,10 +113,15 @@ export class TranslateItem {
         config.forEach(lang => {
             const value = valueList[lang.targetIndex]
             keyList?.forEach((key, index) => {
-                const mapKey = removeSpecialChars(removeExtraLineBreaks(toCamelCaseFromSpace(`${this._initKey}${key}`?.trim())))
+                const mapKey = valueList[this._customizeKeyIndex]?.[0] ||
+                    (this._initKey ?? '') + (this._createKeyRule === 'splitWithLineThrough' ?
+                        (removeSpecialChars(removeExtraLineBreaks(
+                            splitWithLineThrough(`${key}`?.trim())
+                        ), true)) : removeSpecialChars(removeExtraLineBreaks(
+                            toCamelCaseFromSpace(`${key}`?.trim())
+                        )))
 
                 lang.map.set(
-                    // toCamelCaseFromSpace(removeSpecialChars(removeExtraLineBreaks(`${this._initKey}${key}`?.trim()))),
                     mapKey,
                     processString(value?.[index] ?? defaultList?.[index])?.trim()
                 )
