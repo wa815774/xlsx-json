@@ -144,14 +144,29 @@ var TranslateItem = /** @class */ (function () {
         var valueList = item === null || item === void 0 ? void 0 : item.map(function (str) { return _this._strToMap(str); });
         var keyList = (_a = valueList[this._contrastLangIndex]) !== null && _a !== void 0 ? _a : [];
         var defaultList = valueList[this._defaultValueIndex];
+        var rewriteMap = new Map();
         config.forEach(function (lang) {
             var value = valueList[lang.targetIndex];
             keyList === null || keyList === void 0 ? void 0 : keyList.forEach(function (key, index) {
-                var _a, _b, _c, _d, _e, _f;
-                var mapKey = ((_a = valueList[_this._customizeKeyIndex]) === null || _a === void 0 ? void 0 : _a[0]) ||
-                    ((_b = _this._initKey) !== null && _b !== void 0 ? _b : '') + (_this._createKeyRule === 'splitWithLineThrough' ?
-                        (removeSpecialChars(removeExtraLineBreaks(splitWithLineThrough((_c = "".concat(key)) === null || _c === void 0 ? void 0 : _c.trim())), true)) : removeSpecialChars(removeExtraLineBreaks(toCamelCaseFromSpace((_d = "".concat(key)) === null || _d === void 0 ? void 0 : _d.trim()))));
-                lang.map.set(mapKey, (_f = processString((_e = value === null || value === void 0 ? void 0 : value[index]) !== null && _e !== void 0 ? _e : defaultList === null || defaultList === void 0 ? void 0 : defaultList[index])) === null || _f === void 0 ? void 0 : _f.trim());
+                var _a, _b, _c, _d, _e, _f, _g, _h;
+                var mapKey = (_a = valueList[_this._customizeKeyIndex]) === null || _a === void 0 ? void 0 : _a[0];
+                if (!mapKey) {
+                    if (typeof _this._createKeyRule === 'function') {
+                        mapKey = _this._createKeyRule((_b = "".concat(key)) === null || _b === void 0 ? void 0 : _b.trim());
+                    }
+                    else if (_this._createKeyRule === 'splitWithLineThrough') {
+                        mapKey = ((_c = _this._initKey) !== null && _c !== void 0 ? _c : '') + removeSpecialChars(removeExtraLineBreaks(splitWithLineThrough((_d = "".concat(key)) === null || _d === void 0 ? void 0 : _d.trim())), true);
+                    }
+                    else {
+                        mapKey = ((_e = _this._initKey) !== null && _e !== void 0 ? _e : '') + removeSpecialChars(removeExtraLineBreaks(toCamelCaseFromSpace((_f = "".concat(key)) === null || _f === void 0 ? void 0 : _f.trim())));
+                    }
+                }
+                if (rewriteMap.has(mapKey)) {
+                    console.log("".concat(mapKey, " \u91CD\u590D\u4E86\uFF0C\u503C\u662F ").concat(value));
+                    // return // 允许覆盖
+                }
+                lang.map.set(mapKey, (_h = processString((_g = value === null || value === void 0 ? void 0 : value[index]) !== null && _g !== void 0 ? _g : defaultList === null || defaultList === void 0 ? void 0 : defaultList[index])) === null || _h === void 0 ? void 0 : _h.trim());
+                rewriteMap.set(mapKey, 1);
             });
         });
     };

@@ -109,22 +109,37 @@ export class TranslateItem {
         const valueList = item?.map(str => this._strToMap(str))
         const keyList = valueList[this._contrastLangIndex] ?? []
         const defaultList = valueList[this._defaultValueIndex]
+        const rewriteMap = new Map()
 
         config.forEach(lang => {
             const value = valueList[lang.targetIndex]
             keyList?.forEach((key, index) => {
-                const mapKey = valueList[this._customizeKeyIndex]?.[0] ||
-                    (this._initKey ?? '') + (this._createKeyRule === 'splitWithLineThrough' ?
-                        (removeSpecialChars(removeExtraLineBreaks(
+                let mapKey = valueList[this._customizeKeyIndex]?.[0]
+                if (!mapKey) {
+                    if (typeof this._createKeyRule === 'function') {
+                        mapKey = this._createKeyRule(`${key}`?.trim())
+                    }
+                    else if (this._createKeyRule === 'splitWithLineThrough') {
+                        mapKey = (this._initKey ?? '') + removeSpecialChars(removeExtraLineBreaks(
                             splitWithLineThrough(`${key}`?.trim())
-                        ), true)) : removeSpecialChars(removeExtraLineBreaks(
+                        ), true)
+                    } else {
+                        mapKey = (this._initKey ?? '') + removeSpecialChars(removeExtraLineBreaks(
                             toCamelCaseFromSpace(`${key}`?.trim())
-                        )))
+                        ))
+                    }
+                }
+
+                if (rewriteMap.has(mapKey)) {
+                    console.log(`${mapKey} 重复了，值是 ${value}`)
+                    // return // 允许覆盖
+                }
 
                 lang.map.set(
                     mapKey,
                     processString(value?.[index] ?? defaultList?.[index])?.trim()
                 )
+                rewriteMap.set(mapKey, 1)
             })
         })
     }

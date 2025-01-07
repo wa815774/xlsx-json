@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { loadConfig } from "unconfig";
 import { TranslateItem, getTranslateMap, getXlsx, writeFile } from "./utils/index.js";
-import { filterArray } from './utils/tools.js';
+import { filterArray, removeSpecialChars, removeExtraLineBreaks, splitWithLineThrough, toCamelCaseFromSpace } from './utils/tools.js';
 var xlsxToJSON = (function (files) {
     if (files === void 0) { files = 'translate.config'; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -85,3 +85,4 @@ var xlsxToJSON = (function (files) {
     });
 });
 export default xlsxToJSON;
+export { removeSpecialChars, removeExtraLineBreaks, splitWithLineThrough, toCamelCaseFromSpace };

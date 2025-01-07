@@ -1,7 +1,7 @@
 import { loadConfig } from "unconfig"
 import { XlsxAutoJsonConfigProps } from "./types/index.js";
 import { TranslateItem, getTranslateMap, getXlsx, writeFile } from "./utils/index.js";
-import { filterArray } from './utils/tools.js';
+import { filterArray, removeSpecialChars, removeExtraLineBreaks, splitWithLineThrough, toCamelCaseFromSpace } from './utils/tools.js';
 
 const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
     const { config } = await loadConfig<XlsxAutoJsonConfigProps>({
@@ -45,4 +45,5 @@ const xlsxToJSON = (async (files: string | string[] = 'translate.config') => {
 })
 
 export default xlsxToJSON
+export { removeSpecialChars, removeExtraLineBreaks, splitWithLineThrough, toCamelCaseFromSpace }
 export type { XlsxAutoJsonConfigProps }

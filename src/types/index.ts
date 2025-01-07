@@ -6,7 +6,7 @@ export interface XlsxAutoJsonConfigProps {
     /** 自定义key的列索引 */
     customizeKeyIndex?: number
     /** key生成规则，默认驼峰 */
-    createKeyRule: 'camelCase' | 'splitWithLineThrough'
+    createKeyRule: 'camelCase' | 'splitWithLineThrough' | ((key: string) => string);
 
 
     /** 翻译转换文件地址(xlsx) */
